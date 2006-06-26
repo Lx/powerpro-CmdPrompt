@@ -1,0 +1,31 @@
+;
+; CmdPrompt v1.0
+; Written by Alex Peters, 10/6/2005
+;
+; Opens a command prompt at a location determined by the currently active
+; window.
+;
+;   *  For Explorer windows this will be the location in view (if the location
+;      is accessible by the command prompt, e.g. not Control Panel).
+;   *  For the desktop this will be the user's Desktop folder (if running NT).
+;   *  In all other cases this will be the window's working directory.
+;
+; Usage: .CmdPrompt()
+;
+; All feedback is encouraged on the PowerPro discussion list:
+;   *  http://groups.yahoo.com/group/power-pro
+; ____________________________________________________________________________
+
+local folder
+local ADDRESS_INDEX = 3
+
+if (activeWindow(?"c=CabinetWClass") || activeWindow(?"c=ExploreWClass"))
+	folder = Win.childTextByIndex(?"active", ADDRESS_INDEX)
+if (activeWindow(?"c=ProgMan"))
+	folder = env(?"userProfile") ++ ?"\Desktop"
+
+if (not(validPath(folder)))
+	folder = currentDir
+
+; The '/K Rem' suppresses display of copyright information.
+do(env(?"comSpec"), ?"/K Rem", folder)
